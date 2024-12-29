@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passwort Generator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #334e68;
+        }
+
+        .output {
+            background: #f5f7fa;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-family: 'Courier New', Courier, monospace;
+            color: #243b53;
+            overflow-wrap: break-word;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .output.password-animation {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading {
+            font-size: 2em;
+            color: #627d98;
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success {
+            font-size: 2em;
+            color: #2dce89;
+        }
+
+        .controls {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .controls label {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 0.95em;
+            color: #486581;
+        }
+
+        .controls input[type="checkbox"] {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #627d98;
+            appearance: none;
+            outline: none;
+            cursor: pointer;
+            transition: background 0.3s, border 0.3s;
+        }
+
+        .controls input[type="checkbox"]:checked {
+            background: #627d98;
+            border: 2px solid #52687a;
+        }
+
+        .controls input[type="range"] {
+            width: 100%;
+            margin-top: 5px;
+            transition: background 0.3s;
+        }
+
+        .controls span#length-value {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: bold;
+            color: #334e68;
+            transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+
+        .length-animation {
+            animation: bounce 0.3s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .generate-btn {
+            background-color: #627d98;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        .generate-btn:hover {
+            background-color: #52687a;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Passwort Generator</h1>
+        <div class="output" id="password-output">Ihr Passwort erscheint hier</div>
+        <div class="error" id="error-message"></div>
+        <div class="controls">
+            <label><input type="checkbox" id="uppercase"> Großbuchstaben</label>
+            <label><input type="checkbox" id="lowercase"> Kleinbuchstaben</label>
+            <label><input type="checkbox" id="numbers"> Zahlen</label>
+            <label><input type="checkbox" id="special"> Sonderzeichen</label>
+            <label>Länge: <span id="length-value">12</span></label>
+            <input type="range" id="length" min="4" max="30" value="12">
+        </div>
+        <button class="generate-btn" id="generate">Passwort generieren</button>
+    </div>
+
+    <script>
+        const passwordOutput = document.getElementById('password-output');
+        const lengthInput = document.getElementById('length');
+        const lengthValue = document.getElementById('length-value');
+        const generateBtn = document.getElementById('generate');
+        const uppercase = document.getElementById('uppercase');
+        const lowercase = document.getElementById('lowercase');
+        const numbers = document.getElementById('numbers');
+        const special = document.getElementById('special');
+        const errorMessage = document.getElementById('error-message');
+
+        lengthInput.addEventListener('input', () => {
+            lengthValue.textContent = lengthInput.value;
+            lengthValue.classList.add('length-animation');
+            setTimeout(() => lengthValue.classList.remove('length-animation'), 300);
+        });
+
+        function generatePassword() {
+            const length = lengthInput.value;
+            let charset = '';
+            if (uppercase.checked) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (lowercase.checked) charset += 'abcdefghijklmnopqrstuvwxyz';
+            if (numbers.checked) charset += '0123456789';
+            if (special.checked) charset += '!@#$%^&*()_+';
+            
+            if (!charset) {
+                errorMessage.textContent = 'Bitte mindestens eine Option wählen!';
+                passwordOutput.textContent = '';
+                return;
+            } else {
+                errorMessage.textContent = ''; // Entfernen der Fehlermeldung
+            }
+
+            passwordOutput.innerHTML = '<div class="loading">⏳</div>';
+            setTimeout(() => {
+                let password = '';
+                for (let i = 0; i < length; i++) {
+                    password += charset.charAt(Math.floor(Math.random() * charset.length));
+                }
+                passwordOutput.textContent = password;
+            }, 3000);
+        }
+
+        generateBtn.addEventListener('click', generatePassword);
+    </script>
+</body>
+</html>

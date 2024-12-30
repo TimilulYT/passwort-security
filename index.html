@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Passwort Generator</title>
     <style>
+        :root {
+            --background-light: #f0f4f8;
+            --background-dark: #1e1e1e;
+            --container-light: #fff;
+            --container-dark: rgba(40, 40, 40, 0.9);
+            --text-light: #334e68;
+            --text-dark: #e0e0e0;
+            --button-light: #627d98;
+            --button-dark: #8c8cf9;
+            --button-hover: #4a90e2;
+            --accent-dark: #03dac6;
+            --glass-bg: rgba(50, 50, 50, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --checkbox-checked-light: #4a5568;
+            --checkbox-checked-dark: #03dac6;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -12,22 +29,30 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+            background: var(--background-light);
+            transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+
+        body.dark-mode {
+            background: var(--background-dark);
+            color: var(--text-dark);
         }
 
         .container {
-            background: #fff;
+            background: var(--container-light);
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             width: 400px;
             text-align: center;
+            transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
 
-        h1 {
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            color: #334e68;
+        body.dark-mode .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
         }
 
         .output {
@@ -37,47 +62,25 @@
             border-radius: 8px;
             font-size: 1.2em;
             font-family: 'Courier New', Courier, monospace;
-            color: #243b53;
             overflow-wrap: break-word;
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .output.password-animation {
-            animation: fadeIn 0.5s ease-in-out;
+            animation: fadeIn 1s ease-in-out;
         }
 
         @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(-10px); }
-            100% { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .loading {
-            font-size: 2em;
-            color: #627d98;
-            animation: spin 3s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .success {
-            font-size: 2em;
-            color: #2dce89;
-        }
-
-        .controls {
-            text-align: left;
-            margin-bottom: 20px;
+        body.dark-mode .output {
+            background: var(--glass-bg);
+            color: var(--text-dark);
+            border: 1px solid var(--glass-border);
         }
 
         .controls label {
             display: flex;
             align-items: center;
             margin: 10px 0;
-            font-size: 0.95em;
-            color: #486581;
         }
 
         .controls input[type="checkbox"] {
@@ -85,61 +88,52 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            border: 2px solid #627d98;
             appearance: none;
-            outline: none;
+            border: 2px solid var(--checkbox-checked-light);
             cursor: pointer;
-            transition: background 0.3s, border 0.3s;
+            transition: background 0.3s ease-in-out, border 0.3s ease-in-out;
         }
 
         .controls input[type="checkbox"]:checked {
-            background: #627d98;
-            border: 2px solid #52687a;
+            background: var(--checkbox-checked-light);
+            border-color: var(--checkbox-checked-light);
         }
 
-        .controls input[type="range"] {
-            width: 100%;
-            margin-top: 5px;
-            transition: background 0.3s;
+        body.dark-mode .controls input[type="checkbox"] {
+            border-color: var(--checkbox-checked-dark);
         }
 
-        .controls span#length-value {
-            display: inline-block;
-            margin-left: 10px;
-            font-weight: bold;
-            color: #334e68;
-            transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
-        }
-
-        .length-animation {
-            animation: bounce 0.3s ease-in-out;
-        }
-
-        @keyframes bounce {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); }
+        body.dark-mode .controls input[type="checkbox"]:checked {
+            background: var(--checkbox-checked-dark);
+            border-color: var(--checkbox-checked-dark);
         }
 
         .generate-btn {
-            background-color: #627d98;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
+            margin-top: 20px;
+            padding: 12px 25px;
             font-size: 1em;
-            transition: background 0.3s;
+            font-weight: bold;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, var(--button-light), var(--button-hover));
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
 
         .generate-btn:hover {
-            background-color: #52687a;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
-        .error {
-            color: #e74c3c;
-            font-size: 1.1em;
-            margin-bottom: 10px;
+        body.dark-mode .generate-btn {
+            background: linear-gradient(135deg, var(--button-dark), var(--accent-dark));
+        }
+
+        .dark-mode-toggle {
+            margin-top: 20px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -147,7 +141,6 @@
     <div class="container">
         <h1>🔒 Passwort Generator</h1>
         <div class="output" id="password-output">Ihr Passwort erscheint hier</div>
-        <div class="error" id="error-message"></div>
         <div class="controls">
             <label><input type="checkbox" id="uppercase"> Großbuchstaben</label>
             <label><input type="checkbox" id="lowercase"> Kleinbuchstaben</label>
@@ -156,53 +149,54 @@
             <label>Länge: <span id="length-value">12</span></label>
             <input type="range" id="length" min="4" max="30" value="12">
         </div>
-        <button class="generate-btn" id="generate">Passwort generieren</button>
+        <button class="generate-btn" id="generate">🔄 Passwort generieren</button>
+        <div class="dark-mode-toggle" id="dark-mode-toggle">🌙 Dark Mode</div>
     </div>
-
     <script>
-        const passwordOutput = document.getElementById('password-output');
-        const lengthInput = document.getElementById('length');
+                const lengthSlider = document.getElementById('length');
         const lengthValue = document.getElementById('length-value');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
         const generateBtn = document.getElementById('generate');
-        const uppercase = document.getElementById('uppercase');
-        const lowercase = document.getElementById('lowercase');
-        const numbers = document.getElementById('numbers');
-        const special = document.getElementById('special');
-        const errorMessage = document.getElementById('error-message');
+        const passwordOutput = document.getElementById('password-output');
 
-        lengthInput.addEventListener('input', () => {
-            lengthValue.textContent = lengthInput.value;
-            lengthValue.classList.add('length-animation');
-            setTimeout(() => lengthValue.classList.remove('length-animation'), 300);
+        lengthSlider.addEventListener('input', () => {
+            lengthValue.textContent = lengthSlider.value;
         });
 
-        function generatePassword() {
-            const length = lengthInput.value;
-            let charset = '';
-            if (uppercase.checked) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            if (lowercase.checked) charset += 'abcdefghijklmnopqrstuvwxyz';
-            if (numbers.checked) charset += '0123456789';
-            if (special.checked) charset += '!@#$%^&*()_+';
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+
+        generateBtn.addEventListener('click', () => {
+            const uppercase = document.getElementById('uppercase').checked;
+            const lowercase = document.getElementById('lowercase').checked;
+            const numbers = document.getElementById('numbers').checked;
+            const special = document.getElementById('special').checked;
+            const length = lengthSlider.value;
             
-            if (!charset) {
-                errorMessage.textContent = 'Bitte mindestens eine Option wählen!';
-                passwordOutput.textContent = '';
+            const upperChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lowerChars = 'abcdefghijklmnopqrstuvwxyz';
+            const numberChars = '0123456789';
+            const specialChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            let charSet = '';
+            if (uppercase) charSet += upperChars;
+            if (lowercase) charSet += lowerChars;
+            if (numbers) charSet += numberChars;
+            if (special) charSet += specialChars;
+            
+            if (!charSet) {
+                passwordOutput.textContent = 'Bitte mindestens eine Option wählen!';
                 return;
-            } else {
-                errorMessage.textContent = ''; // Entfernen der Fehlermeldung
             }
-
-            passwordOutput.innerHTML = '<div class="loading">⏳</div>';
-            setTimeout(() => {
-                let password = '';
-                for (let i = 0; i < length; i++) {
-                    password += charset.charAt(Math.floor(Math.random() * charset.length));
-                }
-                passwordOutput.textContent = password;
-            }, 3000);
-        }
-
-        generateBtn.addEventListener('click', generatePassword);
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charSet.length);
+                password += charSet[randomIndex];
+            }
+            passwordOutput.textContent = password;
+        });
     </script>
 </body>
 </html>

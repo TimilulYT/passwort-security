@@ -153,50 +153,74 @@
         <div class="dark-mode-toggle" id="dark-mode-toggle">🌙 Dark Mode</div>
     </div>
     <script>
-                const lengthSlider = document.getElementById('length');
-        const lengthValue = document.getElementById('length-value');
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        const generateBtn = document.getElementById('generate');
-        const passwordOutput = document.getElementById('password-output');
-
-        lengthSlider.addEventListener('input', () => {
-            lengthValue.textContent = lengthSlider.value;
+        const lengthSlider = document.getElementById("length");
+        const lengthValue = document.getElementById("length-value");
+        const darkModeToggle = document.getElementById("dark-mode-toggle");
+        const generateBtn = document.getElementById("generate");
+        const passwordOutput = document.getElementById("password-output");
+  
+        lengthSlider.addEventListener("input", () => {
+          lengthValue.textContent = lengthSlider.value;
         });
-
-        darkModeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
+  
+        function setDarkMode(isDark) {
+          if (isDark) {
+            document.body.classList.add("dark-mode");
+            document.cookie = "darkMode=true; path=/; max-age=31536000";
+          } else {
+            document.body.classList.remove("dark-mode");
+            document.cookie = "darkMode=false; path=/; max-age=31536000";
+          }
+        }
+  
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(";").shift();
+        }
+  
+        document.addEventListener("DOMContentLoaded", () => {
+          const darkModeCookie = getCookie("darkMode");
+          if (darkModeCookie === "true") {
+            document.body.classList.add("dark-mode");
+          }
         });
-
-        generateBtn.addEventListener('click', () => {
-            const uppercase = document.getElementById('uppercase').checked;
-            const lowercase = document.getElementById('lowercase').checked;
-            const numbers = document.getElementById('numbers').checked;
-            const special = document.getElementById('special').checked;
-            const length = lengthSlider.value;
-            
-            const upperChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            const lowerChars = 'abcdefghijklmnopqrstuvwxyz';
-            const numberChars = '0123456789';
-            const specialChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-            
-            let charSet = '';
-            if (uppercase) charSet += upperChars;
-            if (lowercase) charSet += lowerChars;
-            if (numbers) charSet += numberChars;
-            if (special) charSet += specialChars;
-            
-            if (!charSet) {
-                passwordOutput.textContent = 'Bitte mindestens eine Option wählen!';
-                return;
-            }
-            
-            let password = '';
-            for (let i = 0; i < length; i++) {
-                const randomIndex = Math.floor(Math.random() * charSet.length);
-                password += charSet[randomIndex];
-            }
-            passwordOutput.textContent = password;
+  
+        darkModeToggle.addEventListener("click", () => {
+          const isDarkMode = document.body.classList.toggle("dark-mode");
+          setDarkMode(isDarkMode);
         });
-    </script>
+  
+        generateBtn.addEventListener("click", () => {
+          const uppercase = document.getElementById("uppercase").checked;
+          const lowercase = document.getElementById("lowercase").checked;
+          const numbers = document.getElementById("numbers").checked;
+          const special = document.getElementById("special").checked;
+          const length = lengthSlider.value;
+  
+          const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+          const lowerChars = "abcdefghijklmnopqrstuvwxyz";
+          const numberChars = "0123456789";
+          const specialChars = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+  
+          let charSet = "";
+          if (uppercase) charSet += upperChars;
+          if (lowercase) charSet += lowerChars;
+          if (numbers) charSet += numberChars;
+          if (special) charSet += specialChars;
+  
+          if (!charSet) {
+            passwordOutput.textContent = "Bitte mindestens eine Option wählen!";
+            return;
+          }
+  
+          let password = "";
+          for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * charSet.length);
+            password += charSet[randomIndex];
+          }
+          passwordOutput.textContent = password;
+        });
+      </script>
 </body>
 </html>
